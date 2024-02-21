@@ -1,0 +1,44 @@
+{% extends 'shopzero/home.html' %}
+
+{% block content %}
+    <h1>{{ product.name }}</h1>
+    <img src="{{ product.image.url }}" width="100px" height="100px" alt="{{ product.name }}">
+    <p><strong>Price:</strong> ${{ product.price }}</p>
+    <p><strong>Quantity:</strong> {{ product.quantity }}</p>
+    <p><strong>Description:</strong> {{ product.description }}</p>
+    <p><strong>Release Date:</strong> {{ product.release_date }}</p>
+    <p><strong>Category:</strong> {{ product.category }}</p>
+
+    <form method="post" action="{% url 'add_to_cart' product_id=product.id %}">
+        {% csrf_token %}
+        <label for="quantity">Quantity:</label>
+        <input class="form-control mr-sm-2" type="number" id="quantity" placeholder="Quantity" aria-label="Quantity" name="quantity" value="1" min="1">
+        <button type="submit" class="btn btn-primary">Add to Cart</button>
+    </form>
+    <a href="{% url 'product_update' pk=product.id %}">Update info</a> || <a href="{% url 'product_delete' pk=product.id %}">Delete Product</a>
+    || <a href="{% url 'add_to_wishlist' pk=product.id %}">Add to wish list</a>
+    <h2>Add a Review</h2>
+    <form method="post" action="{% url 'add_review' product_id=product.id %}">
+        {% csrf_token %}
+        <label for="rating">Rating:</label>
+        <input class="form-control mr-sm-2" type="number" id="rating" placeholder="Rating" aria-label="Rating" name="rating" value="5" min="1" max="5">
+        <label for="comment">Comment:</label>
+        <textarea class="form-control mr-sm-2" id="comment" placeholder="Comment" aria-label="Comment" name="comment"></textarea>
+        <button type="submit" class="btn btn-primary">Submit Review</button>
+    </form>
+
+    <h1>Reviews for {{ product.name }}</h1>
+    <ul>
+        {% for review in product.reviews.all %}
+    <li>
+        <strong>Date Added:</strong> {{ review.date_added}}<br>
+      <strong>Rating:</strong> {{ review.rating }}<br>
+      <strong>Comment:</strong> {{ review.comment }}<br>
+      <strong>Username:</strong> {{ review.user.username|title }}<br>
+      <hr>
+    </li>
+  {% empty %}
+    <li>No reviews found.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

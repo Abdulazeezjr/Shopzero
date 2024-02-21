@@ -1,0 +1,25 @@
+{% extends 'shopzero/home.html' %}
+{% block content %}
+<h1>My Wishlist</h1>
+{% if wish.items.all %}
+    <ul>
+        {% for wish_item in wish.items.all %}
+            <li>
+                <h2>{{ wish_item.product.name }}</h2>
+                <img src="{{ wish_item.product.image.url }}" width="110px" height="100px" alt="{{ wish_item.product.name }}">
+                <p>Price: ${{ wish_item.product.price }}</p>
+                <p>Date Added: {{wish_item.date_added}}</p>
+                <p>ID: {{wish_item.id}}</p>
+                <a href="{% url 'product_detail' pk=wish_item.product.pk %}">Add to cart</a>
+                <form action="{% url 'del_from_wishlist' pk=wish_item.pk %}" method="post">
+                    {% csrf_token %}
+                    <input type="submit" value="Remove">
+                </form>
+                <!-- Add more details about the product as needed -->
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Your wishlist is empty.</p>
+{% endif %}
+{% endblock %}
